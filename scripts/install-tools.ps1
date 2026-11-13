@@ -95,8 +95,12 @@ if ((-not (Test-Path 'public\build\manifest.json')) -or $ForcePortable) {
     }
 }
 
+$cleanPath = (($env:PATH -split ';') | Where-Object { $_ -and $_ -notmatch '(?i)[\\/]oraclexe[\\/]' }) -join ';'
+if ($nodeDirectory) { $cleanPath = $nodeDirectory + ';' + $cleanPath }
 $commands = @('@echo off', ('set "PHP_BIN=' + $php + '"'),
     ('set "COMPOSER_PHAR=' + $composerPhar + '"'))
-if ($nodeDirectory) { $commands += 'set "PATH=' + $nodeDirectory + ';%PATH%"' }
+# Oracle XE bundles an old unzip that can hang Composer on paths with spaces.
+# Limit the adjustment to this launcher's environment; do not change Windows PATH.
+$commands += 'set "PATH=' + $cleanPath + '"'
 [IO.File]::WriteAllLines((Join-Path $root 'runtime\tools.cmd'), $commands, [Text.Encoding]::Default)
 Write-Host 'Outils de lancement prets.'
