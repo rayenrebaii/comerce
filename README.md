@@ -10,7 +10,7 @@ commandes, factures, livraisons et tableau de bord.
 2. Double-cliquer sur **`lancer-projet.bat`**.
 3. Le navigateur s'ouvre sur **http://127.0.0.1:8000**.
 
-Au premier démarrage, le lanceur récupère les outils manquants (PHP 8.3,
+Au premier démarrage, le lanceur récupère les outils manquants (PHP 8.2,
 Composer et Node.js 24) dans le dossier local `runtime`, installe les dépendances
 avec `composer install` et `npm ci`, puis compile le site. Les téléchargements des
 outils sont vérifiés avec les empreintes SHA256 publiées par leurs éditeurs.
@@ -55,7 +55,7 @@ php -d extension=pdo_sqlite vendor/phpunit/phpunit/phpunit
 ```
 
 Le PHP utilisé doit être compatible avec le projet. Le lanceur choisit
-automatiquement un PHP 8.1 minimum ; `PHP_BIN` permet de le sélectionner.
+automatiquement PHP 8.1 ou 8.2 ; `PHP_BIN` permet de le sélectionner.
 
 ## Partager une copie prête à lancer
 

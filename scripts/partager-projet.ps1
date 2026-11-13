@@ -9,11 +9,11 @@ if (-not $PhpPath) {
     $candidates += @(Get-Command php.exe -ErrorAction SilentlyContinue | ForEach-Object Source)
     foreach ($candidate in $candidates) {
         if (-not (Test-Path -LiteralPath $candidate)) { continue }
-        & $candidate -r 'exit(PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 90000 ? 0 : 1);' 2>$null
+        & $candidate -r 'exit(PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80300 ? 0 : 1);' 2>$null
         if ($LASTEXITCODE -eq 0) { $PhpPath = $candidate; break }
     }
 }
-if (-not $PhpPath) { throw 'PHP 8.1 minimum introuvable pour le paquet Windows.' }
+if (-not $PhpPath) { throw 'PHP 8.1 ou 8.2 introuvable pour le paquet Windows.' }
 if (-not (Test-Path 'vendor\autoload.php')) { throw 'Lancez lancer-projet.bat --prepare avant de partager.' }
 if (-not (Test-Path 'public\build\manifest.json')) { throw 'Compilez les fichiers du site avant de partager.' }
 

@@ -50,8 +50,8 @@ rem Demarrer sans ouverture automatique du navigateur
 lancer-projet.bat --no-browser
 ```
 
-Le lanceur privilégie `runtime/php/php.exe` s'il est inclus, puis recherche un PHP
-8.1 minimum dans le PATH, Laragon et XAMPP. Pour choisir un exécutable précis :
+Le lanceur privilégie `runtime/php/php.exe` s'il est inclus, puis recherche PHP
+8.1 ou 8.2 dans le PATH, Laragon et XAMPP. Pour choisir un exécutable précis :
 
 ```bat
 set "PHP_BIN=C:\chemin\vers\php.exe"

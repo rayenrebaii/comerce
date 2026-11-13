@@ -17,7 +17,7 @@ for /f "delims=" %%P in ('where php.exe 2^>nul') do call :try_php "%%P"
 for /d %%D in ("C:\laragon\bin\php\*") do call :try_php "%%~D\php.exe"
 call :try_php "C:\xampp\php\php.exe"
 if not defined PHP_BIN (
-    echo [ERREUR] PHP 8.1 minimum requis. Utilisez l'archive de partage avec PHP inclus.
+    echo [ERREUR] PHP 8.1 ou 8.2 requis. Utilisez l'archive de partage avec PHP inclus.
     goto fail
 )
 
@@ -25,9 +25,9 @@ if not defined PHP_BIN (
 for %%P in ("%PHP_BIN%") do set "STAGE_PHP_DIR=%%~dpP"
 set "PATH=%STAGE_PHP_DIR%;%PATH%"
 set "PHP_ARGS="
-"%PHP_BIN%" -r "exit(PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 90000 ? 0 : 1);" >nul 2>&1
+"%PHP_BIN%" -r "exit(PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80300 ? 0 : 1);" >nul 2>&1
 if errorlevel 1 (
-    echo [ERREUR] PHP_BIN doit designer PHP 8.1 minimum, version 8.x.
+    echo [ERREUR] PHP_BIN doit designer PHP 8.1 ou 8.2, versions 8.1 ou 8.2.
     goto fail
 )
 "%PHP_BIN%" -r "exit(extension_loaded('pdo_sqlite') ? 0 : 1);"
@@ -96,7 +96,7 @@ exit /b 0
 :try_php
 if defined PHP_BIN exit /b 0
 if not exist "%~1" exit /b 0
-"%~1" -r "exit(PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 90000 ? 0 : 1);" >nul 2>&1
+"%~1" -r "exit(PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80300 ? 0 : 1);" >nul 2>&1
 if not errorlevel 1 set "PHP_BIN=%~1"
 exit /b 0
 

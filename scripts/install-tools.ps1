@@ -30,21 +30,21 @@ if ($env:PHP_BIN -and -not $ForcePortable) {
     foreach ($candidate in $candidates) {
         if (-not (Test-Path -LiteralPath $candidate)) { continue }
         $env:STAGE_PHP_DIR = Split-Path -Parent $candidate
-        & $candidate -r 'exit(PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 90000 ? 0 : 1);' 2>$null
+        & $candidate -r 'exit(PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80300 ? 0 : 1);' 2>$null
         if ($LASTEXITCODE -eq 0) { $php = $candidate; break }
     }
 }
 if (-not $php) {
     if (-not [Environment]::Is64BitOperatingSystem) { throw 'Windows 64 bits est requis.' }
     $releases = Invoke-RestMethod 'https://downloads.php.net/~windows/releases/releases.json' -TimeoutSec 60
-    $release = $releases.'8.3'.'nts-vs16-x64'.zip
+    $release = $releases.'8.2'.'nts-vs16-x64'.zip
     if (-not $release -or $release.path -notmatch '^php-[a-zA-Z0-9.\-]+\.zip$') { throw 'Version PHP officielle introuvable.' }
     $download = Join-Path $root ('runtime\downloads\' + $release.path)
     Get-VerifiedFile ('https://downloads.php.net/~windows/releases/' + $release.path) $download $release.sha256
     $phpDirectory = Join-Path $root 'runtime\php'
     if (Test-Path -LiteralPath (Join-Path $phpDirectory 'php.exe')) {
         # Do not overwrite an existing runtime when explicitly testing a download.
-        $phpDirectory = Join-Path $root ('runtime\php-' + $releases.'8.3'.version)
+        $phpDirectory = Join-Path $root ('runtime\php-' + $releases.'8.2'.version)
     }
     if (-not (Test-Path -LiteralPath (Join-Path $phpDirectory 'php.exe'))) {
         [IO.Compression.ZipFile]::ExtractToDirectory($download, $phpDirectory)
@@ -64,7 +64,7 @@ if (-not $php) {
     $php = Join-Path $phpDirectory 'php.exe'
 }
 $env:STAGE_PHP_DIR = Split-Path -Parent $php
-& $php -r 'exit(PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 90000 ? 0 : 1);'
+& $php -r 'exit(PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80300 ? 0 : 1);'
 if ($LASTEXITCODE -ne 0) { throw 'PHP ne demarre pas. Verifiez le redistribuable Microsoft Visual C++ x64.' }
 
 $composerPhar = ''
@@ -91,7 +91,7 @@ if ((-not (Test-Path 'public\build\manifest.json')) -or $ForcePortable) {
         $download = Join-Path $root ('runtime\downloads\' + $match.Groups[2].Value)
         Get-VerifiedFile ($base + $match.Groups[2].Value) $download $match.Groups[1].Value
         [IO.Compression.ZipFile]::ExtractToDirectory($download, (Join-Path $root 'runtime'))
-        $nodeDirectory = Join-Path $root ([IO.Path]::GetFileNameWithoutExtension($match.Groups[2].Value))
+        $nodeDirectory = Join-Path (Join-Path $root 'runtime') ([IO.Path]::GetFileNameWithoutExtension($match.Groups[2].Value))
     }
 }
 
